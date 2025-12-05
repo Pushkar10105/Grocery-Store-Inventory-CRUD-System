@@ -176,5 +176,3 @@ Therefore, you must run the program from inside the source\_code folder, otherwi
 
 !\[Update or Delete](screenshots/update.png)
 
-
-
