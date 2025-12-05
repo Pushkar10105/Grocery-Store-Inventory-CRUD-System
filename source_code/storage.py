@@ -1,96 +1,87 @@
 import csv
 import os
 
-# Define the file name. Keeping it in the same folder is safer for submission.
-INVENTORY_FILE = "inventory.csv"
+# defining the path to the csv file. 
+# using ".." to go up one level and look into the 'data' folder so code and data are separate.
+INVENTORY_FILE = os.path.join("..", "data", "inventory.csv") 
 
 def add_product(product_id, name, quantity, price):
-    # Check if the file exists to see if we need headers (optional, but good practice)
-    file_exists = os.path.exists(INVENTORY_FILE)
-    
-    # Open file in append mode ('a') so we don't erase old data
+    # check if the data folder exists, if not, create it so the program doesn't crash
+    folder_path = os.path.dirname(INVENTORY_FILE)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # open file in append mode ('a') so we add to the list instead of overwriting it
     with open(INVENTORY_FILE, 'a', newline='') as file:
         writer = csv.writer(file)
-        # Write the data as a new row
         writer.writerow([product_id, name, quantity, price])
-        
-    print(f"Product '{name}' added successfully.")
+    print(f"Product {name} added successfully.")
 
 def view_products():
     print("\nCurrent Inventory:")
-    
-    # Check if file exists first to avoid crashing
-    if not os.path.exists(INVENTORY_FILE):
-        print("No inventory file found. Try adding a product first.")
-        return
-
-    # Open in read mode ('r')
-    with open(INVENTORY_FILE, 'r') as file:
-        reader = csv.reader(file)
-        # Loop through each row in the CSV and print it
-        for row in reader:
-            # Formatting the output to make it look nice
-            print(f"ID: {row[0]} | Name: {row[1]} | Qty: {row[2]} | Price: {row[3]}")
+    # using try-except to handle the case where the file doesn't exist yet (first run)
+    try:
+        with open(INVENTORY_FILE, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(row)
+    except FileNotFoundError:
+        print("No inventory file found. Try adding a product first!")
 
 def update_product(product_id, name=None, quantity=None, price=None):
     updated = False
     rows = []
     
-    # Check if file exists before trying to read
-    if not os.path.exists(INVENTORY_FILE):
+    try:
+        # read all the rows from the file into a list
+        with open(INVENTORY_FILE, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                # check if this is the product we want to update
+                if row[0] == product_id:
+                    # update the fields only if the user provided new info
+                    if name: row[1] = name
+                    if quantity: row[2] = quantity
+                    if price: row[3] = price
+                    updated = True
+                rows.append(row) # add the row (updated or not) to our list
+        
+        # if we found the product, rewrite the whole file with the updated list
+        if updated:
+            with open(INVENTORY_FILE, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(rows)
+            print(f"Product {product_id} updated successfully.")
+        else:
+            print(f"Product {product_id} not found.")
+            
+    except FileNotFoundError:
         print("Inventory is empty.")
-        return
-
-    # Read all data into a list first
-    with open(INVENTORY_FILE, 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            # Check if this is the row we want to update
-            if row[0] == product_id:
-                # Update specific fields if the user provided new data
-                if name: 
-                    row[1] = name
-                if quantity: 
-                    row[2] = quantity
-                if price: 
-                    row[3] = price
-                updated = True
-            # Add the row (updated or original) to our list
-            rows.append(row)
-    
-    # If we found and updated the product, write everything back to the file
-    if updated:
-        with open(INVENTORY_FILE, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
-        print(f"Product {product_id} updated successfully.")
-    else:
-        print(f"Product {product_id} not found.")
 
 def delete_product(product_id):
     deleted = False
     rows = []
     
-    if not os.path.exists(INVENTORY_FILE):
+    try:
+        # read the file to find the item to remove
+        with open(INVENTORY_FILE, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                # if the ID does NOT match, we keep the row
+                if row[0] != product_id:
+                    rows.append(row)
+                else:
+                    # if it matches, we don't add it to 'rows', effectively deleting it
+                    deleted = True
+        
+        # write the remaining rows back to the file
+        if deleted:
+            with open(INVENTORY_FILE, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(rows)
+            print(f"Product {product_id} deleted successfully.")
+        else:
+            print(f"Product {product_id} not found.")
+            
+    except FileNotFoundError:
         print("Inventory is empty.")
-        return
-
-    # Read the file to find the item to remove
-    with open(INVENTORY_FILE, 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            # If the ID does NOT match, keep the row
-            if row[0] != product_id:
-                rows.append(row)
-            else:
-                # If it matches, we don't append it (effectively deleting it)
-                deleted = True
-    
-    # Rewrite the file with the remaining rows
-    if deleted:
-        with open(INVENTORY_FILE, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
-        print(f"Product {product_id} deleted successfully.")
-    else:
-        print(f"Product {product_id} not found.")
