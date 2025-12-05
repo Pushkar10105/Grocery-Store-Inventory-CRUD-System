@@ -114,7 +114,7 @@ cd Grocery-Store-Inventory-CRUD-System
 
 Then go into the sub folder:-
 
-cd source\_code
+cd source code
 
 ###### 
 
@@ -130,7 +130,7 @@ python main.py
 
 **This project uses the following line in storage.py to access the data file:**
 
-INVENTORY\_FILE = os.path.join("..", "data", "inventory.csv")
+INVENTORY FILE = os.path.join("..", "data", "inventory.csv")
 
 
 
@@ -138,7 +138,7 @@ This means the program expects:
 
 
 
-main.py and storage.py to stay inside the source\_code folder
+main.py and storage.py to stay inside the source code folder
 
 
 
@@ -150,29 +150,29 @@ Therefore, you must run the program from inside the source\_code folder, otherwi
 
 
 
-\## 📸 Project Screenshots
+## 📸 Project Screenshots
 
 
 
-\### Main Menu
+### Main Menu
 
-!\[Main Menu](screenshots/menu.png)
-
-
-
-\### Adding a Product
-
-!\[Add Product](screenshots/add\_product.png)
+![Main Menu](screenshots/menu.png)
 
 
 
-\### Viewing Products
+### Adding a Product
 
-!\[View Products](screenshots/view\_products.png)
+![Add Product](screenshots/add\_product.png)
 
 
 
-\### Update / Delete Product
+### Viewing Products
 
-!\[Update or Delete](screenshots/update.png)
+![View Products](screenshots/view\_products.png)
+
+
+
+### Update / Delete Product
+
+![Update or Delete](screenshots/update.png)
 
